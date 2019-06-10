@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<project name="Socket Project" default="jar" basedir=".">
+
+    <description>Builds, tests, and runs the project Project2</description>
+    <property name="projectdir" location="." /> 
+    
+    <property name="User" value="ECE155B" /> 
+    
+    <property name="src" location="src" /> 
+    <property name="build" location="build" /> 
+    <property name="dist" location="dist" /> 
+    
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${build}" />
+        <mkdir dir="${dist}" />
+    </target>
+  
+    <target name="compile" depends="init" description="compile the source">
+        <javac srcdir="${src}" destdir="${build}"> 
+            <classpath >
+                <pathelement path="${classpath}"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <target name="jar-doctor" depends="compile" description="Creates the doctor jar file">
+        <jar destfile="${dist}/Doctor.jar">
+            <fileset dir="${build}">
+                <patternset>
+                    <include name="ece155b/doctor/**" />
+                    <include name="ece155b/common/**" />
+                </patternset>
+            </fileset>
+            <manifest>
+                <attribute name="Built-By" value="${User}"/>
+                <attribute name="Main-Class" value="ece155b/doctor/DoctorApp" />
+                <attribute name="Class-Path" value="" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="jar-patient" depends="compile" description="Creates the patient jar file">
+        <jar destfile="${dist}/Patient.jar">
+            <fileset dir="${build}">
+                <patternset>
+                    <include name="ece155b/patient/**" />
+                    <include name="ece155b/common/**" />
+                </patternset>
+            </fileset>
+            <manifest>
+                <attribute name="Built-By" value="${User}"/>
+                <attribute name="Main-Class" value="ece155b/patient/PatientApp" />
+                <attribute name="Class-Path" value="" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="jar" depends="jar-doctor,jar-patient" />
+    
+    <target name="runDoc" depends="jar-doctor">
+        <java jar="${dist}/Doctor.jar" fork="true" />
+    </target>
+    
+    <target name="runPat" depends="jar-patient">
+        <java jar="${dist}/Patient.jar" fork="true" />
+    </target>
+    
+    <target name="clean" >
+        <delete dir="${build}" />
+        <delete file="${dist}/Doctor.jar" />
+        <delete file="${dist}/Patient.jar" />
+    </target>
+    
+    <target name="submission" description="prepare for submission"> 
+        <tar destfile="${projectdir}/Prj2-${User}.rar">
+            <tarfileset dir=".">
+                <include name="**"/>
+            </tarfileset>
+        </tar>
+    </target>
+    
+</project>
